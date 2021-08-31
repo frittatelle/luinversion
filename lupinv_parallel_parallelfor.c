@@ -118,6 +118,7 @@ void print_matrix(double **A, int n){
     }
 }
 
+#define tol 0.0000000001
 
 int main(int argc, char *argv[]) {
 
