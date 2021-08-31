@@ -120,19 +120,16 @@ void print_matrix(double **A, int n){
 }
 
 
-#define threads 2
-#define n 2048
-#define tol 0.000000000001
+int main(int argc, char *argv[]) {
 
-int main() {
+    int threads = atoi(argv[1]);
+    int n = atoi(argv[2]);
+    int chunk_size = atoi(argv[3]);
 
     double lupinv_start, lupinv_end, lupinv_time;
     lupinv_start = omp_get_wtime();
+    omp_set_num_threads(threads);
     printf("----- LUP Decomposition and Inversion -----\n\n");
-
-    //    omp_set_num_threads(threads);
-    int nthreads = omp_get_num_threads();
-    printf("Number of threads: %d\n", nthreads);
 
     int *P=malloc(n*sizeof(int)); // Memory allocation for permutation matrix
     double *A[n]; // Array of rowpointers for A matrix
@@ -187,7 +184,7 @@ int main() {
     // LUP inversion
     if(decomposition_flag){
         inversion_start = omp_get_wtime();
-        LUPInvert(A, P, n, IA);
+        LUPInvert(A, P, n, IA, chunk_size);
         inversion_end = omp_get_wtime();
         lup_inversion_time = inversion_end - inversion_start;
         printf("\n----- LUP inversion -----\n");
@@ -210,8 +207,6 @@ int main() {
 
     return 0;
 }
-
-
 
 
 
