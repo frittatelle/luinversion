@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <omp.h>
+#include <string.h>
 
 
 /* INPUT: A - array of pointers to rows of a square matrix having dimension N
@@ -74,11 +75,8 @@ int LUPDecompose(double **A, int N, double Tol, int *P) {
 /*https://en.wikipedia.org/wiki/LU_decomposition*/
 void LUPInvert(double **A, int *P, int N, double **IA, int chunk_size) {
     // solve N linear system. Ax =b with b == [1 0 0], [0 1 0]...
-    #pragma omp parallel for \
-        default(none) \
-        schedule(dynamic, chunk_size) \
-        shared(IA, N, P, A) \
-        private(chunk_size)
+    #pragma omp parallel default(none) shared(IA, N, P, A, chunk_size)
+    #pragma omp for schedule(dynamic, chunk_size)
     for (int j = 0; j < N; j++) {
 
         /* NP: IA is initialized in line 76:
@@ -121,6 +119,11 @@ void print_matrix(double **A, int n){
 #define tol 0.0000000001
 
 int main(int argc, char *argv[]) {
+
+    if(argc == 2 && strcmp(argv[1], "--help")==0){
+        printf("Usage:\n./program  #threads #matrix_size #chunk_size\n");
+        return 0;
+    }
 
     int threads = atoi(argv[1]);
     int n = atoi(argv[2]);

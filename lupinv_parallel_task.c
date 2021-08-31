@@ -123,6 +123,11 @@ void print_matrix(double **A, int n){
 
 int main(int argc, char *argv[]) {
 
+    if(argc == 2 && strcmp(argv[1], "--help")==0){
+        printf("Usage:\n./program  #threads #matrix_size #chunk_size\n");
+        return 0;
+    }
+
     int threads = atoi(argv[1]);
     int n = atoi(argv[2]);
     int chunk_size = atoi(argv[3]);
