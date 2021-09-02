@@ -124,13 +124,12 @@ void print_matrix(double **A, int n){
 int main(int argc, char *argv[]) {
 
     if(argc == 2 && strcmp(argv[1], "--help")==0){
-        printf("Usage:\n./program  #threads #matrix_size #chunk_size\n");
+        printf("Usage:\n./program  #threads #matrix_size\n");
         return 0;
     }
 
     int threads = atoi(argv[1]);
     int n = atoi(argv[2]);
-    int chunk_size = atoi(argv[3]);
 
     double lupinv_start, lupinv_end, lupinv_time;
     lupinv_start = omp_get_wtime();
@@ -190,7 +189,7 @@ int main(int argc, char *argv[]) {
     // LUP inversion
     if(decomposition_flag){
         inversion_start = omp_get_wtime();
-        LUPInvert(A, P, n, IA, chunk_size);
+        LUPInvert(A, P, n, IA);
         inversion_end = omp_get_wtime();
         lup_inversion_time = inversion_end - inversion_start;
         printf("\n----- LUP inversion -----\n");

@@ -207,7 +207,6 @@ int main(int argc, char *argv[]) {
     printf("LUP inversion time /  LUP routine ratio: %.7f\n", lup_inversion_time / lupinv_time);
     printf("LUP decomposition + inversion time /  LUP routine ratio: %.7f\n", (lup_decomposition_time + lup_inversion_time) / lupinv_time);
 
-
     return 0;
 }
 
