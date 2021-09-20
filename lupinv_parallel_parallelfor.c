@@ -76,14 +76,14 @@ int LUPDecompose(double **A, int N, double Tol, int *P) {
 void LUPInvert(double **A, int *P, int N, double **IA, int chunk_size) {
     // solve N linear system. Ax =b with b == [1 0 0], [0 1 0]...
     #pragma omp parallel default(none) shared(IA, N, P, A, chunk_size)
-    #pragma omp for schedule(dynamic, chunk_size)
+    #pragma omp for schedule(static, chunk_size)
     for (int j = 0; j < N; j++) {
 
-        /* NP: IA is initialized in line 76:
+        /* NP: IA is initialized in line 91:
          *  IA[i][j] = P[i] == j ? 1.0 : 0.0;
          *
          * and it can be consumed in the next iteration
-         * by another thread in line 79 (IA[k][j] with k < i):
+         * by another thread in line 93 (IA[k][j] with k < i):
          *
          * IA[i][j] -= A[i][k] * IA[k][j];
          * */

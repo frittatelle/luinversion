@@ -79,26 +79,25 @@ void LUPInvert(double **A, int *P, int N, double **IA) {
     #pragma omp task default(none) shared(IA, N, P, A)
     for (int j = 0; j < N; j++) {
 
-        /* NP: IA is initialized in line :
+        /* NP: IA is initialized in line 92:
          *  IA[i][j] = P[i] == j ? 1.0 : 0.0;
          *
          * and it can be consumed in the next iteration
-         * by another thread in line 79 (IA[k][j] with k < i):
+         * by another thread in line 94 (IA[k][j] with k < i):
          *
          * IA[i][j] -= A[i][k] * IA[k][j];
          * */
-        #pragma omp task default(none) shared(IA, N, P, A, j)
+
         for (int i = 0; i < N; i++) {
             IA[i][j] = P[i] == j ? 1.0 : 0.0;
             for (int k = 0; k < i; k++)
                 IA[i][j] -= A[i][k] * IA[k][j];
         }
-        #pragma omp taskwait
+
 
         // Backsubstitution
         /*NP: loop carried dependency is not parallelizable:
          * result found in one iteration is used following iterations*/
-        #pragma omp task default(none) shared(IA, N, P, A, j)
         for (int i = N - 1; i >= 0; i--) {
             for (int k = i + 1; k < N; k++)
                 IA[i][j] -= A[i][k] * IA[k][j];
